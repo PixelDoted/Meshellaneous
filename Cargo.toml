@@ -1,9 +1,11 @@
 [package]
 name = "meshellaneous"
+authors = ["PixelDots"]
 version = "0.0.2"
 edition = "2021"
 license = "MIT"
 description = "Miscellaneous Mesh utilities"
+documentation = "https://docs.rs/meshellaneous"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
