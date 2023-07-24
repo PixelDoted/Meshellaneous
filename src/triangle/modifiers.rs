@@ -4,7 +4,7 @@ use super::Triangle;
 
 impl Triangle {
     /// Subdivides this triangle into 4 other triangles
-    pub fn subdivide(self) -> [Triangle; 4] {
+    pub fn subdivide(&self) -> [Triangle; 4] {
         let p01 = self[0] + (self[1] - self[0]) * 0.5;
         let p12 = self[1] + (self[2] - self[1]) * 0.5;
         let p20 = self[2] + (self[0] - self[2]) * 0.5;
@@ -21,7 +21,7 @@ impl Triangle {
     /// this will usually output 3 triangles  
     /// but in rare cases can output 2 triangles  
     /// note: returns 1 triangle if nothing changed
-    pub fn slice(self, plane: &Plane) -> Vec<Triangle> {
+    pub fn slice(&self, plane: &Plane) -> Vec<Triangle> {
         let d = plane.normal.dot(plane.point);
         let sides = [
             plane.side(self[0]),
