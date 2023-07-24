@@ -1,3 +1,5 @@
+mod modifiers;
+
 use std::ops::{Index, IndexMut};
 
 use glam::Vec3;
@@ -6,11 +8,11 @@ use crate::triangle::Triangle;
 
 /// A Mesh made up of triangles
 #[derive(Clone, Default, Debug)]
-pub struct Mesh {
+pub struct TriMesh {
     triangles: Vec<Triangle>,
 }
 
-impl Mesh {
+impl TriMesh {
     pub fn new(triangles: Vec<Triangle>) -> Self {
         Self { triangles }
     }
@@ -61,7 +63,7 @@ impl Mesh {
     }
 }
 
-impl Index<usize> for Mesh {
+impl Index<usize> for TriMesh {
     type Output = Triangle;
 
     /// returns an index to the nth triangle
@@ -70,7 +72,7 @@ impl Index<usize> for Mesh {
     }
 }
 
-impl IndexMut<usize> for Mesh {
+impl IndexMut<usize> for TriMesh {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.triangles[index]
     }
