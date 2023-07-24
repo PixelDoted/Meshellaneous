@@ -5,7 +5,7 @@ use std::{
 
 use glam::Vec3;
 
-use crate::{traits::Intersect, Line, Ray};
+use crate::{plane::Plane, traits::Intersect, Ray, Segment};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
@@ -16,6 +16,13 @@ pub struct Triangle {
 impl Triangle {
     pub fn new(points: [Vec3; 3], normal: Vec3) -> Self {
         Self { points, normal }
+    }
+
+    /// Gets the normal from points  
+    /// and creates a Triangle
+    pub fn from_points(points: [Vec3; 3]) -> Self {
+        let normal = (points[1] - points[0]).cross(points[2] - points[0]);
+        Self::new(points, normal)
     }
 
     /// gets the normal
@@ -36,6 +43,20 @@ impl Triangle {
     /// returns a point with the minimum x, y, and z values
     pub fn min(&self) -> Vec3 {
         self[0].min(self[1]).min(self[2])
+    }
+
+    /// Subdivides this triangle into 4 other triangles
+    pub fn subdivide(self) -> [Triangle; 4] {
+        let p01 = self[0] + (self[1] - self[0]) * 0.5;
+        let p12 = self[1] + (self[2] - self[1]) * 0.5;
+        let p20 = self[2] + (self[0] - self[2]) * 0.5;
+
+        [
+            Triangle::new([self[0], p01, p20], self.normal),
+            Triangle::new([p01, self[1], p12], self.normal),
+            Triangle::new([p20, p12, self[2]], self.normal),
+            Triangle::new([p01, p12, p20], self.normal),
+        ]
     }
 }
 
@@ -101,21 +122,26 @@ impl Intersect<Ray> for Triangle {
     }
 }
 
-impl Intersect<Line> for Triangle {
+impl Intersect<Segment> for Triangle {
     /// get the intersection point of a line segment  
     /// returns None if there's no intersection
-    fn intersects(&self, line: &Line) -> Option<Vec3> {
-        // TODO: Find a faster algorithm
+    fn intersects(&self, segment: &Segment) -> Option<Vec3> {
+        // https://stackoverflow.com/questions/54143142/3d-intersection-between-segment-and-triangle
+        let plane = Plane::new(self[0], self.normal);
+        let point = match plane.intersects(segment) {
+            Some(point) => point,
+            None => return None,
+        };
 
-        let max_dist = line[0].distance_squared(line[1]);
-        let ray = (line[0], line[1] - line[0]);
-        if let Some(point) = self.intersects(&ray) {
-            let dist = point.distance_squared(ray.0);
-            println!("{}", dist);
+        let n12 = (self[1] - self[0]).cross(self.normal);
+        let n23 = (self[2] - self[1]).cross(self.normal);
+        let n31 = (self[0] - self[2]).cross(self.normal);
 
-            if dist <= max_dist {
-                return Some(point);
-            }
+        let da = (point - self[0]).dot(n12) / n12.length();
+        let db = (point - self[1]).dot(n23) / n23.length();
+        let dc = (point - self[2]).dot(n31) / n31.length();
+        if da < -EPSILON && db < -EPSILON && dc < -EPSILON {
+            return Some(point);
         }
 
         None

@@ -3,7 +3,7 @@ use glam::Vec3;
 use crate::{
     plane::{Plane, Side},
     traits::Intersect,
-    Line, Ray,
+    Ray, Segment,
 };
 
 #[test]
@@ -44,25 +44,25 @@ pub fn intersect_ray_parallel() {
 }
 
 #[test]
-pub fn intersect_line() {
+pub fn intersect_segment() {
     let plane = Plane::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-    let line: Line = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(0.0, -1.0, -0.1)];
+    let segment: Segment = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(0.0, -1.0, -0.1)];
 
-    assert_eq!(plane.intersects(&line), Some(Vec3::ZERO));
+    assert_eq!(plane.intersects(&segment), Some(Vec3::ZERO));
 }
 
 #[test]
-pub fn intersect_line_parallel() {
+pub fn intersect_segment_parallel() {
     let plane = Plane::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-    let line: Line = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(1.0, 1.0, 0.1)];
+    let segment: Segment = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(1.0, 1.0, 0.1)];
 
-    assert_eq!(plane.intersects(&line), None);
+    assert_eq!(plane.intersects(&segment), None);
 }
 
 #[test]
-pub fn intersect_line_away() {
+pub fn intersect_segment_away() {
     let plane = Plane::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-    let line: Line = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(0.0, 2.0, 0.1)];
+    let segment: Segment = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(0.0, 2.0, 0.1)];
 
-    assert_eq!(plane.intersects(&line), None);
+    assert_eq!(plane.intersects(&segment), None);
 }

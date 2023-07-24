@@ -2,7 +2,7 @@ use std::f32::EPSILON;
 
 use glam::Vec3;
 
-use crate::{traits::Intersect, Line, Ray};
+use crate::{traits::Intersect, Ray, Segment};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Side {
@@ -36,20 +36,21 @@ impl Plane {
     }
 }
 
-impl Intersect<Line> for Plane {
+impl Intersect<Segment> for Plane {
     /// get the intersection point of a line segment  
     /// returns None if there's no intersection
-    fn intersects(&self, line: &Line) -> Option<Vec3> {
-        // TODO: Find a faster algorithm
+    fn intersects(&self, segment: &Segment) -> Option<Vec3> {
+        // https://stackoverflow.com/questions/7168484/3d-line-segment-and-plane-intersection
+        let d = self.normal.dot(self.point);
 
-        let max_dist = line[0].distance_squared(line[1]);
-        let ray = (line[0], line[1] - line[0]);
-        if let Some(point) = self.intersects(&ray) {
-            let dist = line[0].distance_squared(point);
+        let ray = segment[1] - segment[0];
+        if self.normal.dot(ray) == 0.0 {
+            return None;
+        }
 
-            if dist <= max_dist {
-                return Some(point);
-            }
+        let t = (d - self.normal.dot(segment[0])) / self.normal.dot(ray);
+        if t >= 0.0 && t <= 1.0 {
+            return Some(segment[0] + ray * t);
         }
 
         None

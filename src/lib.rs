@@ -12,7 +12,7 @@ pub mod triangle;
 mod tests;
 
 /// a line segment from [0] to [1]
-pub type Line = [Vec3; 2];
+pub type Segment = [Vec3; 2];
 
 /// a ray at .0 pointing towards .1
 pub type Ray = (Vec3, Vec3);
