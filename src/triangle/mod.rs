@@ -1,3 +1,5 @@
+mod modifiers;
+
 use std::{
     f32::EPSILON,
     ops::{Index, IndexMut},
@@ -43,20 +45,6 @@ impl Triangle {
     /// returns a point with the minimum x, y, and z values
     pub fn min(&self) -> Vec3 {
         self[0].min(self[1]).min(self[2])
-    }
-
-    /// Subdivides this triangle into 4 other triangles
-    pub fn subdivide(self) -> [Triangle; 4] {
-        let p01 = self[0] + (self[1] - self[0]) * 0.5;
-        let p12 = self[1] + (self[2] - self[1]) * 0.5;
-        let p20 = self[2] + (self[0] - self[2]) * 0.5;
-
-        [
-            Triangle::new([self[0], p01, p20], self.normal),
-            Triangle::new([p01, self[1], p12], self.normal),
-            Triangle::new([p20, p12, self[2]], self.normal),
-            Triangle::new([p01, p12, p20], self.normal),
-        ]
     }
 }
 

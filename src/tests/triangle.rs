@@ -1,6 +1,6 @@
 use glam::Vec3;
 
-use crate::{traits::Intersect, triangle::Triangle, Ray, Segment};
+use crate::{plane::Plane, traits::Intersect, triangle::Triangle, Ray, Segment};
 
 #[test]
 pub fn intersect_ray() {
@@ -139,6 +139,45 @@ pub fn subdivide() {
             Vec3::new(-1.0, 0.0, 0.0),
             Vec3::new(0.0, -1.0, 0.0),
             Vec3::new(0.0, 0.0, 0.0)
+        ]
+    );
+}
+
+#[test]
+pub fn slice() {
+    let triangle = Triangle::from_points([
+        Vec3::new(-1.0, 1.0, 0.0),
+        Vec3::new(-1.0, -1.0, 0.0),
+        Vec3::new(1.0, -1.0, 0.0),
+    ]);
+    let plane = Plane::new(Vec3::ZERO, Vec3::X);
+
+    let tris = triangle.slice(&plane);
+    assert_eq!(tris.len(), 3);
+    assert_eq!(
+        [tris[0][0], tris[0][1], tris[0][2]],
+        [
+            Vec3::new(-1.0, 1.0, 0.0),
+            Vec3::new(-1.0, -1.0, 0.0),
+            Vec3::new(0.0, -1.0, 0.0)
+        ]
+    );
+
+    assert_eq!(
+        [tris[1][0], tris[1][1], tris[1][2]],
+        [
+            Vec3::new(0.0, -1.0, 0.0),
+            Vec3::new(1.0, -1.0, 0.0),
+            Vec3::ZERO
+        ]
+    );
+
+    assert_eq!(
+        [tris[2][0], tris[2][1], tris[2][2]],
+        [
+            Vec3::new(-1.0, 1.0, 0.0),
+            Vec3::new(0.0, -1.0, 0.0),
+            Vec3::ZERO
         ]
     );
 }

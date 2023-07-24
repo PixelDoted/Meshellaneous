@@ -14,8 +14,8 @@ pub enum Side {
 /// An infinitly large plane
 #[derive(Clone, Copy, Debug)]
 pub struct Plane {
-    point: Vec3,
-    normal: Vec3,
+    pub point: Vec3,
+    pub normal: Vec3,
 }
 
 impl Plane {
