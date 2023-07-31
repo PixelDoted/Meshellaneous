@@ -36,7 +36,7 @@ impl Plane {
     }
 }
 
-impl Intersect<Segment> for Plane {
+impl Intersect<Segment, Option<Vec3>> for Plane {
     /// get the intersection point of a line segment  
     /// returns None if there's no intersection
     fn intersects(&self, segment: &Segment) -> Option<Vec3> {
@@ -57,7 +57,7 @@ impl Intersect<Segment> for Plane {
     }
 }
 
-impl Intersect<Ray> for Plane {
+impl Intersect<Ray, Option<Vec3>> for Plane {
     /// get the intersection point of a ray  
     /// returns None if there's no intersection
     fn intersects(&self, ray: &Ray) -> Option<Vec3> {
