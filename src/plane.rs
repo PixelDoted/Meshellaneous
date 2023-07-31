@@ -61,7 +61,7 @@ impl Intersect<Ray> for Plane {
     /// get the intersection point of a ray  
     /// returns None if there's no intersection
     fn intersects(&self, ray: &Ray) -> Option<Vec3> {
-        // https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
+        // https://stackoverflow.com/a/23976134
         let denom = self.normal.dot(ray.1);
         if denom.abs() > EPSILON {
             let t = (self.point - ray.0).dot(self.normal) / denom;

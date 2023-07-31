@@ -1,4 +1,4 @@
-use glam::Vec3;
+use glam::{Vec2, Vec3};
 
 use crate::{plane::Plane, traits::Intersect, triangle::Triangle, Ray, Segment};
 
@@ -9,6 +9,11 @@ pub fn intersect_ray() {
             Vec3::new(0.0, 0.0, 0.5),
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
+        ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
         ],
         Vec3::Y,
     );
@@ -25,6 +30,11 @@ pub fn intersect_ray_parallel() {
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
         ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
+        ],
         Vec3::Y,
     );
     let ray: Ray = (Vec3::new(0.0, 1.0, 0.1), Vec3::new(1.0, 0.0, 0.0));
@@ -39,6 +49,11 @@ pub fn intersect_ray_away() {
             Vec3::new(0.0, 0.0, 0.5),
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
+        ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
         ],
         Vec3::Y,
     );
@@ -55,6 +70,11 @@ pub fn intersect_line() {
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
         ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
+        ],
         Vec3::Y,
     );
     let ray: Segment = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(0.0, -1.0, -0.1)];
@@ -70,6 +90,11 @@ pub fn intersect_line_parallel() {
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
         ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
+        ],
         Vec3::Y,
     );
     let ray: Segment = [Vec3::new(0.0, 1.0, 0.1), Vec3::new(1.0, 1.0, 0.1)];
@@ -84,6 +109,11 @@ pub fn intersect_line_away() {
             Vec3::new(0.0, 0.0, 0.5),
             Vec3::new(0.5, 0.0, -0.5),
             Vec3::new(-0.5, 0.0, -0.5),
+        ],
+        [
+            Vec2::new(0.0, 1.0),
+            Vec2::new(1.0, 0.0),
+            Vec2::new(0.0, 0.0),
         ],
         Vec3::Y,
     );
@@ -145,39 +175,76 @@ pub fn subdivide() {
 
 #[test]
 pub fn slice() {
-    let triangle = Triangle::from_points([
-        Vec3::new(-1.0, 1.0, 0.0),
-        Vec3::new(-1.0, -1.0, 0.0),
-        Vec3::new(1.0, -1.0, 0.0),
-    ]);
+    let triangle = Triangle::from_points_uvs(
+        [
+            Vec3::new(-1.0, 1.0, 0.0),
+            Vec3::new(-1.0, -1.0, 0.0),
+            Vec3::new(1.0, -1.0, 0.0),
+        ],
+        [
+            Vec2::new(1.0, 0.0),
+            Vec2::new(1.0, 1.0),
+            Vec2::new(0.0, 1.0),
+        ],
+    );
     let plane = Plane::new(Vec3::ZERO, Vec3::X);
 
     let tris = triangle.slice(&plane);
     assert_eq!(tris.len(), 3);
     assert_eq!(
-        [tris[0][0], tris[0][1], tris[0][2]],
-        [
-            Vec3::new(-1.0, 1.0, 0.0),
-            Vec3::new(-1.0, -1.0, 0.0),
-            Vec3::new(0.0, -1.0, 0.0)
-        ]
+        (
+            [tris[0][0], tris[0][1], tris[0][2]],
+            [tris[0].uvs[0], tris[0].uvs[1], tris[0].uvs[2]]
+        ),
+        (
+            [
+                Vec3::new(-1.0, 1.0, 0.0),
+                Vec3::new(-1.0, -1.0, 0.0),
+                Vec3::new(0.0, -1.0, 0.0)
+            ],
+            [
+                Vec2::new(1.0, 0.0),
+                Vec2::new(1.0, 1.0),
+                Vec2::new(0.5, 1.0)
+            ]
+        )
     );
 
     assert_eq!(
-        [tris[1][0], tris[1][1], tris[1][2]],
-        [
-            Vec3::new(0.0, -1.0, 0.0),
-            Vec3::new(1.0, -1.0, 0.0),
-            Vec3::ZERO
-        ]
+        (
+            [tris[1][0], tris[1][1], tris[1][2]],
+            [tris[1].uvs[0], tris[1].uvs[1], tris[1].uvs[2]]
+        ),
+        (
+            [
+                Vec3::new(0.0, -1.0, 0.0),
+                Vec3::new(1.0, -1.0, 0.0),
+                Vec3::ZERO
+            ],
+            [
+                Vec2::new(0.5, 1.0),
+                Vec2::new(0.0, 1.0),
+                Vec2::new(0.5, 0.5)
+            ]
+        )
     );
 
     assert_eq!(
-        [tris[2][0], tris[2][1], tris[2][2]],
-        [
-            Vec3::new(-1.0, 1.0, 0.0),
-            Vec3::new(0.0, -1.0, 0.0),
-            Vec3::ZERO
-        ]
+        (
+            [tris[2][0], tris[2][1], tris[2][2]],
+            [tris[2].uvs[0], tris[2].uvs[1], tris[2].uvs[2]]
+        ),
+        (
+            [
+                Vec3::new(-1.0, 1.0, 0.0),
+                Vec3::new(0.0, -1.0, 0.0),
+                Vec3::ZERO
+            ],
+            [
+                Vec2::new(1.0, 0.0),
+                Vec2::new(0.5, 1.0),
+                Vec2::new(0.5, 0.5)
+            ]
+        )
     );
 }

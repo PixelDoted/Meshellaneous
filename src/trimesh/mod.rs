@@ -4,7 +4,7 @@ use std::ops::{Index, IndexMut};
 
 use glam::Vec3;
 
-use crate::triangle::Triangle;
+use crate::{indexmesh::IndexMesh, triangle::Triangle};
 
 /// A Mesh made up of triangles
 #[derive(Clone, Default, Debug)]
@@ -89,5 +89,23 @@ impl Index<usize> for TriMesh {
 impl IndexMut<usize> for TriMesh {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.triangles[index]
+    }
+}
+
+impl From<IndexMesh> for TriMesh {
+    fn from(value: IndexMesh) -> Self {
+        let mut out = Self::default();
+        for i in 0..value.index_count() / 3 {
+            let i = i * 3;
+            let index = [value.index(i), value.index(i + 1), value.index(i + 2)];
+
+            out.add(Triangle::from_points([
+                value.vertex(index[0]),
+                value.vertex(index[1]),
+                value.vertex(index[2]),
+            ]));
+        }
+
+        out
     }
 }

@@ -5,36 +5,38 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-use glam::Vec3;
+use glam::{Vec2, Vec3};
 
 use crate::{plane::Plane, traits::Intersect, Ray, Segment};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
-    points: [Vec3; 3],
-    normal: Vec3,
+    pub points: [Vec3; 3],
+    pub uvs: [Vec2; 3],
+    pub normal: Vec3,
 }
 
 impl Triangle {
-    pub fn new(points: [Vec3; 3], normal: Vec3) -> Self {
-        Self { points, normal }
+    pub fn new(points: [Vec3; 3], uvs: [Vec2; 3], normal: Vec3) -> Self {
+        Self {
+            points,
+            uvs,
+            normal,
+        }
+    }
+
+    /// Gets the normal from points
+    /// and create a Triangle
+    pub fn from_points_uvs(points: [Vec3; 3], uvs: [Vec2; 3]) -> Self {
+        let normal = (points[1] - points[0]).cross(points[2] - points[0]);
+        Self::new(points, uvs, normal)
     }
 
     /// Gets the normal from points  
+    /// uses ZERO for uvs
     /// and creates a Triangle
     pub fn from_points(points: [Vec3; 3]) -> Self {
-        let normal = (points[1] - points[0]).cross(points[2] - points[0]);
-        Self::new(points, normal)
-    }
-
-    /// gets the normal
-    pub fn normal(&self) -> Vec3 {
-        self.normal
-    }
-
-    /// sets the normal
-    pub fn set_normal(&mut self, normal: Vec3) {
-        self.normal = normal;
+        Self::from_points_uvs(points, [Vec2::ZERO; 3])
     }
 
     /// returns a point with the maximum x, y and z values
