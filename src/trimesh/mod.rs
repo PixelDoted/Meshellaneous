@@ -95,14 +95,14 @@ impl IndexMut<usize> for TriMesh {
 impl From<IndexMesh> for TriMesh {
     fn from(value: IndexMesh) -> Self {
         let mut out = Self::default();
-        for i in 0..value.index_count() / 3 {
+        for i in 0..value.indices.len() / 3 {
             let i = i * 3;
-            let index = [value.index(i), value.index(i + 1), value.index(i + 2)];
+            let index = [value.indices[i], value.indices[i + 1], value.indices[i + 2]];
 
             out.add(Triangle::from_points([
-                value.vertex(index[0]),
-                value.vertex(index[1]),
-                value.vertex(index[2]),
+                value.vertices[index[0]],
+                value.vertices[index[1]],
+                value.vertices[index[2]],
             ]));
         }
 

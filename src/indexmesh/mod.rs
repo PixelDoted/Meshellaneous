@@ -1,3 +1,5 @@
+mod modifiers;
+
 use glam::Vec3;
 
 use crate::trimesh::TriMesh;
@@ -5,8 +7,8 @@ use crate::trimesh::TriMesh;
 /// TODO: Documentation
 #[derive(Clone, Default, Debug)]
 pub struct IndexMesh {
-    vertices: Vec<Vec3>,
-    indices: Vec<usize>,
+    pub vertices: Vec<Vec3>,
+    pub indices: Vec<usize>,
 }
 
 impl IndexMesh {
@@ -14,7 +16,10 @@ impl IndexMesh {
         Self { vertices, indices }
     }
 
-    /// TODO: Documentation
+    /// Adds a vertex to this mesh
+    /// unless the vertex already exsists
+    ///
+    /// then returns it's index
     pub fn add_vertex(&mut self, vertex: Vec3) -> usize {
         for i in 0..self.vertices.len() {
             let v = &self.vertices[i];
@@ -29,33 +34,18 @@ impl IndexMesh {
         self.vertices.len() - 1
     }
 
-    /// TODO: Documentation
+    /// Adds three indices to this mesh
     pub fn add_triangle(&mut self, i0: usize, i1: usize, i2: usize) {
         self.indices.push(i0);
         self.indices.push(i1);
         self.indices.push(i2);
     }
 
-    /// TODO: Documentation
-    pub fn index_count(&self) -> usize {
-        self.indices.len()
-    }
-
-    /// TODO: Documentation
-    pub fn index(&self, index: usize) -> usize {
-        self.indices[index]
-    }
-
-    /// TODO: Documentation
-    pub fn vertex(&self, index: usize) -> Vec3 {
-        self.vertices[index]
-    }
-
     /// returns a point with the maximum x, y and z values
     pub fn max(&self) -> Vec3 {
-        let mut out = self.vertex(0);
+        let mut out = self.vertices[0];
         for i in 1..self.vertices.len() {
-            out = out.max(self.vertex(i));
+            out = out.max(self.vertices[i]);
         }
 
         out
@@ -63,9 +53,9 @@ impl IndexMesh {
 
     /// returns a point with the minimum x, y, and z values
     pub fn min(&self) -> Vec3 {
-        let mut out = self.vertex(0);
+        let mut out = self.vertices[0];
         for i in 1..self.vertices.len() {
-            out = out.min(self.vertex(i));
+            out = out.min(self.vertices[i]);
         }
 
         out
@@ -73,6 +63,7 @@ impl IndexMesh {
 }
 
 impl From<TriMesh> for IndexMesh {
+    /// Takes this mesh and returns a `TriMesh`
     fn from(value: TriMesh) -> Self {
         let mut out = Self::default();
         for i in 0..value.triangle_count() {

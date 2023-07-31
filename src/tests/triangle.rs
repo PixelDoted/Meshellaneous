@@ -2,6 +2,8 @@ use glam::{Vec2, Vec3};
 
 use crate::{plane::Plane, traits::Intersect, triangle::Triangle, Ray, Segment};
 
+// TODO: Add tests for Triangle-Triangle intersection
+
 #[test]
 pub fn intersect_ray() {
     let triangle = Triangle::new(

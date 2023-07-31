@@ -1,14 +1,9 @@
 mod intersect;
 mod modifiers;
 
-use std::{
-    f32::EPSILON,
-    ops::{Index, IndexMut},
-};
+use std::ops::{Index, IndexMut};
 
 use glam::{Vec2, Vec3};
-
-use crate::{plane::Plane, traits::Intersect, Ray, Segment};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {

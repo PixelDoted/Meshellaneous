@@ -77,6 +77,7 @@ impl Intersect<Segment, Option<Vec3>> for Triangle {
 }
 
 impl Intersect<Triangle, bool> for Triangle {
+    /// returns whether this Triangle intersect another Triangle
     fn intersects(&self, other: &Triangle) -> bool {
         // AABB Check (Cube-Cube intersection)
         let [amin, amax] = [self.min(), self.max()];
