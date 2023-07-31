@@ -46,6 +46,14 @@ impl Triangle {
     pub fn min(&self) -> Vec3 {
         self[0].min(self[1]).min(self[2])
     }
+
+    /// Calculates the area of this triangle
+    pub fn area(&self) -> f32 {
+        // https://math.stackexchange.com/a/128995
+        let ab = self[1] - self[0];
+        let ac = self[2] - self[0];
+        ab.dot(ac) * 0.5
+    }
 }
 
 impl Index<usize> for Triangle {
@@ -67,7 +75,7 @@ impl IndexMut<usize> for Triangle {
 }
 
 impl Intersect<Ray> for Triangle {
-    /// get the intersection point of a ray  
+    /// get the intersection point of a ray
     /// returns None if there's no intersection
     fn intersects(&self, ray: &Ray) -> Option<Vec3> {
         // TODO: Find a faster algorithm
@@ -114,7 +122,7 @@ impl Intersect<Segment> for Triangle {
     /// get the intersection point of a line segment  
     /// returns None if there's no intersection
     fn intersects(&self, segment: &Segment) -> Option<Vec3> {
-        // https://stackoverflow.com/questions/54143142/3d-intersection-between-segment-and-triangle
+        // https://stackoverflow.com/a/58694277
         let plane = Plane::new(self[0], self.normal);
         let point = match plane.intersects(segment) {
             Some(point) => point,

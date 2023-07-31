@@ -61,6 +61,20 @@ impl TriMesh {
 
         out
     }
+
+    /// Calculates the surface area of this mesh
+    pub fn surface_area(&self) -> f32 {
+        let mut sum = 0.0;
+        for t in &self.triangles {
+            let corner = t[0];
+            let a = t[1] - corner;
+            let b = t[2] - corner;
+
+            sum += a.cross(b).length();
+        }
+
+        sum
+    }
 }
 
 impl Index<usize> for TriMesh {

@@ -29,9 +29,9 @@ impl Triangle {
             plane.side(self[2]),
         ];
 
-        let mut triangles = Vec::new();
-        let mut above = Vec::new();
-        let mut below = Vec::new();
+        let mut triangles = Vec::with_capacity(3);
+        let mut above = Vec::with_capacity(3);
+        let mut below = Vec::with_capacity(3);
         for i in 0..3 {
             let j = (i + 1) % 3;
             let si = sides[i];

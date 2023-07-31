@@ -1,6 +1,7 @@
 use super::TriMesh;
 
 impl TriMesh {
+    /// Subdivides every triangle into 4 other triangles
     pub fn subdivide(&self) -> Self {
         let mut output = Self::new(Vec::new());
         for t in &self.triangles {
