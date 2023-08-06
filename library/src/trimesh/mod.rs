@@ -9,7 +9,7 @@ use crate::{indexmesh::IndexMesh, triangle::Triangle};
 /// A Mesh made up of triangles
 #[derive(Clone, Default, Debug)]
 pub struct TriMesh {
-    triangles: Vec<Triangle>,
+    pub triangles: Vec<Triangle>,
 }
 
 impl TriMesh {
@@ -28,24 +28,14 @@ impl TriMesh {
     }
 
     /// returns the amount of triangles this mesh has
-    pub fn triangle_count(&self) -> usize {
+    pub fn tricount(&self) -> usize {
         self.triangles.len()
-    }
-
-    /// returns an iterator over the triangles
-    pub fn iter(&self) -> std::slice::Iter<Triangle> {
-        self.triangles.iter()
-    }
-
-    /// returns a mutable iterator over the triangles
-    pub fn iter_mut(&mut self) -> std::slice::IterMut<Triangle> {
-        self.triangles.iter_mut()
     }
 
     /// returns a point with the maximum x, y and z values
     pub fn max(&self) -> Vec3 {
         let mut out = self[0].max();
-        for i in 1..self.triangle_count() {
+        for i in 1..self.tricount() {
             out = out.max(self[i].max());
         }
 
@@ -55,7 +45,7 @@ impl TriMesh {
     /// returns a point with the minimum x, y, and z values
     pub fn min(&self) -> Vec3 {
         let mut out = self[0].min();
-        for i in 1..self.triangle_count() {
+        for i in 1..self.tricount() {
             out = out.min(self[i].min());
         }
 
@@ -99,11 +89,19 @@ impl From<IndexMesh> for TriMesh {
             let i = i * 3;
             let index = [value.indices[i], value.indices[i + 1], value.indices[i + 2]];
 
-            out.add(Triangle::from_points([
-                value.vertices[index[0]],
-                value.vertices[index[1]],
-                value.vertices[index[2]],
-            ]));
+            out.add(Triangle::new(
+                [
+                    value.vertices[index[0][0]],
+                    value.vertices[index[1][0]],
+                    value.vertices[index[2][0]],
+                ],
+                [
+                    value.uvs[index[0][1]],
+                    value.uvs[index[1][1]],
+                    value.uvs[index[2][1]],
+                ],
+                value.normals[index[0][2]],
+            ));
         }
 
         out

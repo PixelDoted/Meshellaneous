@@ -10,41 +10,22 @@ impl Intersect<Ray, Option<Vec3>> for Triangle {
     /// get the intersection point of a ray
     /// returns None if there's no intersection
     fn intersects(&self, ray: &Ray) -> Option<Vec3> {
-        // TODO: Find a faster algorithm
+        // https://stackoverflow.com/a/42752998
+        let e1 = self[1] - self[0];
+        let e2 = self[2] - self[0];
+        let n = e1.cross(e2);
+        let det = -ray.1.dot(n);
+        let invdet = 1.0 / det;
 
-        //https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-        let edge1 = self[1] - self[0];
-        let edge2 = self[2] - self[0];
-        let h = ray.1.cross(edge2);
-        let a = edge1.dot(h);
+        let ao = ray.0 - self[0];
+        let dao = ao.cross(ray.1);
+        let u = e2.dot(dao) * invdet;
+        let v = -e1.dot(dao) * invdet;
+        let t = ao.dot(n) * invdet;
 
-        if a > -EPSILON && a < EPSILON {
-            return None; // This ray is parallel to this triangle.
-        }
-
-        let f = 1.0 / a;
-        let s = ray.0 - self[0];
-        let u = f * s.dot(h);
-
-        if u < 0.0 || u > 1.0 {
-            return None;
-        }
-
-        let q = s.cross(edge1);
-        let v = f * ray.1.dot(q);
-
-        if v < 0.0 || u + v > 1.0 {
-            return None;
-        }
-
-        // At this stage we can compute t to find out where the intersection point is on the line.
-        let t = f * edge2.dot(q);
-
-        if t > EPSILON {
-            // ray intersection
-            Some(ray.0 + ray.1 * t)
+        if det >= EPSILON && t >= 0.0 && u >= 0.0 && v >= 0.0 && (u + v) <= 1.0 {
+            Some(ray.0 + t * ray.1)
         } else {
-            // This means that there is a line intersection but not a ray intersection.
             None
         }
     }

@@ -1,6 +1,6 @@
 use crate::plane::{Plane, Side};
 
-use super::Triangle;
+use super::{slice::Slice, Triangle};
 
 impl Triangle {
     /// Subdivides this triangle into 4 other triangles
@@ -24,7 +24,7 @@ impl Triangle {
     /// this will usually output 3 triangles  
     /// but in rare cases can output 2 triangles  
     /// note: returns 1 triangle if nothing changed
-    pub fn slice(&self, plane: &Plane) -> Vec<Triangle> {
+    pub fn slice(&self, plane: &Plane) -> Slice {
         let d = plane.normal.dot(plane.point);
         let sides = [
             plane.side(self[0]),
@@ -32,9 +32,9 @@ impl Triangle {
             plane.side(self[2]),
         ];
 
-        let mut triangles = Vec::with_capacity(3);
         let mut above = Vec::with_capacity(3);
         let mut below = Vec::with_capacity(3);
+        let mut output = Slice::empty();
         for i in 0..3 {
             let j = (i + 1) % 3;
             let si = sides[i];
@@ -76,7 +76,7 @@ impl Triangle {
                 let v1 = above.remove(1);
                 let v2 = above[1];
 
-                triangles.push(Triangle::new(
+                output.above.push(Triangle::new(
                     [v0.0, v1.0, v2.0],
                     [v0.1, v1.1, v2.1],
                     self.normal,
@@ -88,7 +88,7 @@ impl Triangle {
                 let v1 = below.remove(1);
                 let v2 = below[1];
 
-                triangles.push(Triangle::new(
+                output.below.push(Triangle::new(
                     [v0.0, v1.0, v2.0],
                     [v0.1, v1.1, v2.1],
                     self.normal,
@@ -96,6 +96,6 @@ impl Triangle {
             }
         }
 
-        triangles
+        output
     }
 }
