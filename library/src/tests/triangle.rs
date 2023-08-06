@@ -191,11 +191,14 @@ pub fn slice() {
     );
     let plane = Plane::new(Vec3::ZERO, Vec3::X);
 
-    let slice = triangle.slice(&plane);
-    assert_eq!(slice.above.len() + slice.below.len(), 3);
-    let a = slice.above[0];
-    let b = slice.below[0];
-    let c = slice.below[1];
+    let mut above = Vec::new();
+    let mut below = Vec::new();
+    triangle.slice(&plane, &mut above, &mut below);
+
+    assert_eq!(above.len() + below.len(), 3);
+    let a = above[0];
+    let b = below[0];
+    let c = below[1];
 
     assert_eq!(
         ([a[0], a[1], a[2]], [a.uvs[0], a.uvs[1], a.uvs[2]]),
@@ -214,10 +217,7 @@ pub fn slice() {
     );
 
     assert_eq!(
-        (
-            [b[0], b[1], b[2]],
-            [b.uvs[0], b.uvs[1], b.uvs[2]]
-        ),
+        ([b[0], b[1], b[2]], [b.uvs[0], b.uvs[1], b.uvs[2]]),
         (
             [
                 Vec3::new(0.0, -1.0, 0.0),
@@ -233,10 +233,7 @@ pub fn slice() {
     );
 
     assert_eq!(
-        (
-            [c[0], c[1], c[2]],
-            [c.uvs[0], c.uvs[1], c.uvs[2]]
-        ),
+        ([c[0], c[1], c[2]], [c.uvs[0], c.uvs[1], c.uvs[2]]),
         (
             [
                 Vec3::new(-1.0, 1.0, 0.0),

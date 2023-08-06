@@ -1,6 +1,5 @@
 mod intersect;
 mod modifiers;
-pub mod slice;
 
 use std::ops::{Index, IndexMut};
 

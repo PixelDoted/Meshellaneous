@@ -1,6 +1,6 @@
 use crate::plane::{Plane, Side};
 
-use super::{slice::Slice, Triangle};
+use super::Triangle;
 
 impl Triangle {
     /// Subdivides this triangle into 4 other triangles
@@ -21,10 +21,8 @@ impl Triangle {
     }
 
     /// Slices this triangle in half  
-    /// this will usually output 3 triangles  
-    /// but in rare cases can output 2 triangles  
-    /// note: returns 1 triangle if nothing changed
-    pub fn slice(&self, plane: &Plane) -> Slice {
+    /// outputs 3-1 triangles total
+    pub fn slice(&self, plane: &Plane, above: &mut Vec<Triangle>, below: &mut Vec<Triangle>) {
         let d = plane.normal.dot(plane.point);
         let sides = [
             plane.side(self[0]),
@@ -32,29 +30,28 @@ impl Triangle {
             plane.side(self[2]),
         ];
 
-        let mut above = Vec::with_capacity(3);
-        let mut below = Vec::with_capacity(3);
-        let mut output = Slice::empty();
+        let mut vabove = Vec::with_capacity(3);
+        let mut vbelow = Vec::with_capacity(3);
         for i in 0..3 {
             let j = (i + 1) % 3;
             let si = sides[i];
 
             if si == Side::Coplanar {
                 if plane.normal.dot(self.normal) > 0.0 {
-                    above.push((self[i], self.uvs[i]));
+                    vabove.push((self[i], self.uvs[i]));
                 } else {
-                    below.push((self[i], self.uvs[i]));
+                    vbelow.push((self[i], self.uvs[i]));
                 }
 
                 continue;
             }
 
             if si == Side::Above {
-                above.push((self[i], self.uvs[i]));
+                vabove.push((self[i], self.uvs[i]));
             }
 
             if si == Side::Below {
-                below.push((self[i], self.uvs[i]));
+                vbelow.push((self[i], self.uvs[i]));
             }
 
             if matches!(
@@ -67,35 +64,33 @@ impl Triangle {
                 let v = self[i] + vector * t;
                 let uv = self.uvs[i] + (self.uvs[j] - self.uvs[i]) * t;
 
-                above.push((v, uv));
-                below.push((v, uv));
+                vabove.push((v, uv));
+                vbelow.push((v, uv));
             }
 
-            if above.len() == 3 {
-                let v0 = above[0];
-                let v1 = above.remove(1);
-                let v2 = above[1];
+            if vabove.len() == 3 {
+                let v0 = vabove[0];
+                let v1 = vabove.remove(1);
+                let v2 = vabove[1];
 
-                output.above.push(Triangle::new(
+                above.push(Triangle::new(
                     [v0.0, v1.0, v2.0],
                     [v0.1, v1.1, v2.1],
                     self.normal,
                 ));
             }
 
-            if below.len() == 3 {
-                let v0 = below[0];
-                let v1 = below.remove(1);
-                let v2 = below[1];
+            if vbelow.len() == 3 {
+                let v0 = vbelow[0];
+                let v1 = vbelow.remove(1);
+                let v2 = vbelow[1];
 
-                output.below.push(Triangle::new(
+                below.push(Triangle::new(
                     [v0.0, v1.0, v2.0],
                     [v0.1, v1.1, v2.1],
                     self.normal,
                 ));
             }
         }
-
-        output
     }
 }
