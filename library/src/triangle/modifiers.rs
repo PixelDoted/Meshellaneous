@@ -30,6 +30,11 @@ impl Triangle {
             plane.side(self[2]),
         ];
 
+        // Skip for loop
+        if sides[0] == sides[1] && sides[0] == sides[2] {
+            todo!();
+        }
+
         let mut vabove = Vec::with_capacity(3);
         let mut vbelow = Vec::with_capacity(3);
         for i in 0..3 {
@@ -42,8 +47,6 @@ impl Triangle {
                 } else {
                     vbelow.push((self[i], self.uvs[i]));
                 }
-
-                continue;
             }
 
             if si == Side::Above {
@@ -61,14 +64,15 @@ impl Triangle {
                 let vector = self[j] - self[i];
                 let t = (d - plane.normal.dot(self[i])) / plane.normal.dot(vector);
 
-                let v = self[i] + vector * t;
-                let uv = self.uvs[i] + (self.uvs[j] - self.uvs[i]) * t;
+                let v = self[i] + vector * t; // get vertex
+                let uv = self.uvs[i].lerp(self.uvs[j], t); // get uv
 
                 vabove.push((v, uv));
                 vbelow.push((v, uv));
             }
 
-            if vabove.len() == 3 {
+            // Add above triangle
+            while vabove.len() >= 3 {
                 let v0 = vabove[0];
                 let v1 = vabove.remove(1);
                 let v2 = vabove[1];
@@ -80,7 +84,8 @@ impl Triangle {
                 ));
             }
 
-            if vbelow.len() == 3 {
+            // Add below triangle
+            while vbelow.len() >= 3 {
                 let v0 = vbelow[0];
                 let v1 = vbelow.remove(1);
                 let v2 = vbelow[1];
