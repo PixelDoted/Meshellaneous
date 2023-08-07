@@ -32,7 +32,15 @@ impl Triangle {
 
         // Skip for loop
         if sides[0] == sides[1] && sides[0] == sides[2] {
-            todo!();
+            if matches!(sides[0], Side::Coplanar | Side::Above) {
+                above.push(*self);
+            }
+
+            if matches!(sides[0], Side::Coplanar | Side::Below) {
+                below.push(*self);
+            }
+
+            return;
         }
 
         let mut vabove = Vec::with_capacity(3);
