@@ -1,5 +1,5 @@
 use glam::Vec3;
-use meshellaneous::{plane::Plane, trimesh::TriMesh};
+use meshellaneous::{meshes::TriMesh, plane::Plane};
 
 fn main() {
     let data = std::fs::read_to_string("./mesh.obj").unwrap();

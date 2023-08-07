@@ -4,7 +4,9 @@ use std::ops::{Index, IndexMut};
 
 use glam::Vec3;
 
-use crate::{indexmesh::IndexMesh, triangle::Triangle};
+use crate::triangle::Triangle;
+
+use super::IndexMesh;
 
 /// A Mesh made up of triangles
 #[derive(Clone, Default, Debug)]

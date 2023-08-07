@@ -5,6 +5,8 @@ use std::ops::{Index, IndexMut};
 
 use glam::{Vec2, Vec3};
 
+use crate::polygon::Polygon;
+
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub points: [Vec3; 3],
@@ -69,5 +71,24 @@ impl Index<usize> for Triangle {
 impl IndexMut<usize> for Triangle {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.points[index]
+    }
+}
+
+impl From<Polygon> for Vec<Triangle> {
+    fn from(value: Polygon) -> Vec<Triangle> {
+        let mut out = Vec::new();
+        for i in 1..value.len() - 1 {
+            let v0 = &value.vertices[0];
+            let v1 = &value.vertices[i];
+            let v2 = &value.vertices[i + 1];
+
+            out.push(Triangle::new(
+                [v0.point, v1.point, v2.point],
+                [v0.uv, v1.uv, v2.uv],
+                (v0.normal + v1.normal + v2.normal) / 3.0,
+            ));
+        }
+
+        out
     }
 }

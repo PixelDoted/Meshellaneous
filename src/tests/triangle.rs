@@ -2,8 +2,7 @@ use glam::{Vec2, Vec3};
 
 use crate::{plane::Plane, traits::Intersect, triangle::Triangle, Ray, Segment};
 
-// TODO: Add tests for Triangle-Triangle intersection
-
+// ---- Intersection ----
 #[test]
 pub fn intersect_ray() {
     let triangle = Triangle::new(
@@ -125,6 +124,12 @@ pub fn intersect_line_away() {
 }
 
 #[test]
+fn intersect_triangle() {
+    // TODO: Add tests for Triangle-Triangle intersection
+}
+
+// ---- Modifiers ----
+#[test]
 pub fn subdivide() {
     let triangle = Triangle::from_points([
         Vec3::new(-1.0, 1.0, 0.0),
@@ -200,6 +205,7 @@ pub fn slice() {
     let b = below[0];
     let c = below[1];
 
+    // A0
     assert_eq!(
         ([a[0], a[1], a[2]], [a.uvs[0], a.uvs[1], a.uvs[2]]),
         (
@@ -216,6 +222,7 @@ pub fn slice() {
         )
     );
 
+    // B0
     assert_eq!(
         ([b[0], b[1], b[2]], [b.uvs[0], b.uvs[1], b.uvs[2]]),
         (
@@ -232,6 +239,7 @@ pub fn slice() {
         )
     );
 
+    // B1
     assert_eq!(
         ([c[0], c[1], c[2]], [c.uvs[0], c.uvs[1], c.uvs[2]]),
         (

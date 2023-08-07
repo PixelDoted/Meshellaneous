@@ -3,11 +3,12 @@
 
 use glam::Vec3;
 
-pub mod indexmesh;
+pub mod meshes;
 pub mod plane;
+pub mod polygon;
 pub mod traits;
 pub mod triangle;
-pub mod trimesh;
+pub mod vertex;
 
 #[cfg(test)]
 mod tests;

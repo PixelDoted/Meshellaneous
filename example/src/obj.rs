@@ -1,5 +1,5 @@
 use glam::{Vec2, Vec3};
-use meshellaneous::{triangle::Triangle, trimesh::TriMesh};
+use meshellaneous::{meshes::TriMesh, triangle::Triangle};
 
 pub fn decode(s: String) -> std::io::Result<TriMesh> {
     let mut vertices: Vec<Vec3> = Vec::new();

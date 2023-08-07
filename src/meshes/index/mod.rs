@@ -2,7 +2,7 @@ mod modifiers;
 
 use glam::{Vec2, Vec3};
 
-use crate::trimesh::TriMesh;
+use super::TriMesh;
 
 /// TODO: Documentation
 /// Currently assumes indices are in triangles (0, 1, 2)
