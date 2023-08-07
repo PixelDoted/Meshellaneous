@@ -1,3 +1,5 @@
+mod modifiers;
+
 use std::ops::{Index, IndexMut};
 
 use glam::Vec3;

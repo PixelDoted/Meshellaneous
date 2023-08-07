@@ -1,15 +1,11 @@
+mod side;
+
 use std::f32::EPSILON;
 
 use glam::Vec3;
 
 use crate::{traits::Intersect, Ray, Segment};
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Side {
-    Coplanar,
-    Below,
-    Above,
-}
+pub use side::Side;
 
 /// An infinitly large plane
 #[derive(Clone, Copy, Debug)]

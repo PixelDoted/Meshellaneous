@@ -31,12 +31,12 @@ impl Triangle {
         ];
 
         // Skip for loop
-        if sides[0] == sides[1] && sides[0] == sides[2] {
-            if matches!(sides[0], Side::Coplanar | Side::Above) {
+        if sides[0].aprox_equals(&sides[1]) && sides[0].aprox_equals(&sides[2]) {
+            if sides[0].aprox_above() && sides[1].aprox_above() && sides[2].aprox_above() {
                 above.push(*self);
             }
 
-            if matches!(sides[0], Side::Coplanar | Side::Below) {
+            if sides[0].aprox_below() && sides[1].aprox_below() && sides[2].aprox_below() {
                 below.push(*self);
             }
 
@@ -49,19 +49,11 @@ impl Triangle {
             let j = (i + 1) % 3;
             let si = sides[i];
 
-            if si == Side::Coplanar {
-                if plane.normal.dot(self.normal) > 0.0 {
-                    vabove.push((self[i], self.uvs[i]));
-                } else {
-                    vbelow.push((self[i], self.uvs[i]));
-                }
-            }
-
-            if si == Side::Above {
+            if matches!(si, Side::Above | Side::Coplanar) {
                 vabove.push((self[i], self.uvs[i]));
             }
 
-            if si == Side::Below {
+            if matches!(si, Side::Below | Side::Coplanar) {
                 vbelow.push((self[i], self.uvs[i]));
             }
 
