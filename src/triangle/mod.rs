@@ -54,6 +54,16 @@ impl Triangle {
         let ac = self[2] - self[0];
         ab.dot(ac) * 0.5
     }
+
+    /// Flips this triangles normal  
+    /// and reverses it's vertices
+    pub fn flip(&self) -> Triangle {
+        Triangle::new(
+            [self[2], self[1], self[0]],
+            [self.uvs[2], self.uvs[1], self.uvs[0]],
+            -self.normal,
+        )
+    }
 }
 
 impl Index<usize> for Triangle {

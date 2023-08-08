@@ -23,7 +23,7 @@ impl Intersect<Ray, Option<Vec3>> for Triangle {
         let v = -e1.dot(dao) * invdet;
         let t = ao.dot(n) * invdet;
 
-        if det >= EPSILON && t >= 0.0 && u >= 0.0 && v >= 0.0 && (u + v) <= 1.0 {
+        if det.abs() >= EPSILON && t >= 0.0 && u >= 0.0 && v >= 0.0 && (u + v) <= 1.0 {
             Some(ray.0 + t * ray.1)
         } else {
             None
@@ -75,6 +75,7 @@ impl Intersect<Triangle, bool> for Triangle {
         }
 
         // Edge Intersection (Segment-Triangle intersection)
+
         self.intersects(&[other[0], other[1]]).is_some()
             || self.intersects(&[other[1], other[2]]).is_some()
             || self.intersects(&[other[2], other[0]]).is_some()

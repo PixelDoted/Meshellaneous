@@ -34,21 +34,12 @@ impl TriMesh {
         self.triangles.len()
     }
 
-    /// returns a point with the maximum x, y and z values
-    pub fn max(&self) -> Vec3 {
-        let mut out = self[0].max();
+    /// returns two points with the minimum and maximum x, y, and z values
+    pub fn min_max(&self) -> [Vec3; 2] {
+        let mut out = [self[0].min(), self[0].max()];
         for i in 1..self.tricount() {
-            out = out.max(self[i].max());
-        }
-
-        out
-    }
-
-    /// returns a point with the minimum x, y, and z values
-    pub fn min(&self) -> Vec3 {
-        let mut out = self[0].min();
-        for i in 1..self.tricount() {
-            out = out.min(self[i].min());
+            out[0] = out[0].min(self[i].min());
+            out[1] = out[1].max(self[i].max());
         }
 
         out

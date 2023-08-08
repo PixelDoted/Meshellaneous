@@ -9,12 +9,12 @@ impl Polygon {
     /// Slices this polygon in half  
     pub fn slice(&self, plane: &Plane, above: &mut Vec<Polygon>, below: &mut Vec<Polygon>) {
         let d = plane.normal.dot(plane.point);
-        let mut vabove = Vec::with_capacity(3);
-        let mut vbelow = Vec::with_capacity(3);
+        let mut vabove = Vec::with_capacity(4);
+        let mut vbelow = Vec::with_capacity(4);
 
         let mut last = plane.side(self[0].point);
-        for i in 1..self.len() {
-            let vi = self[i];
+        for i in 1..=self.len() {
+            let vi = self[i % self.len()];
             let si = plane.side(vi.point);
 
             if matches!(si, Side::Above | Side::Coplanar) {
@@ -35,7 +35,7 @@ impl Polygon {
 
                 let v = Vertex::new(
                     vi.point + vector * t,
-                    vi.uv.lerp(vi.uv, t),
+                    vi.uv.lerp(vj.uv, t),
                     vi.normal.lerp(vj.normal, t),
                 );
 
